@@ -1,0 +1,9 @@
+------------------------------------------------------
+TODO:
+------------------------------------------------------
+- Add PSL1GHT cobra source as well, so I don't 
+  have to include the compiled library / binary 
+  (libcobra_psl1ght.a).
+
+>> CaptainCPS-X
+------------------------------------------------------

@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\ftp">
+      <UniqueIdentifier>{8275b928-4bf9-4232-89fd-7cf3e0cd0da7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ftp">
+      <UniqueIdentifier>{e56362f0-6deb-4ffa-a1ac-27d66214afe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\history">
+      <UniqueIdentifier>{1c100baf-3ca6-45e2-a47f-6852b3f9bce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\history">
+      <UniqueIdentifier>{1c2c847d-fc5d-42d6-81a2-390fa3467246}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\video.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ftp\ftp.cpp">
+      <Filter>Source Files\ftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ftp\ftpcmd.cpp">
+      <Filter>Source Files\ftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ftp\functions.cpp">
+      <Filter>Source Files\ftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\history\history.c">
+      <Filter>Source Files\history</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cfw_modules.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\iso_mount.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\source\lv2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\mm_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ftp\common_ftp.h">
+      <Filter>Header Files\ftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ftp\ftp.h">
+      <Filter>Header Files\ftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ftp\ftp_filesystem.h">
+      <Filter>Header Files\ftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ftp\ftpcmd.h">
+      <Filter>Header Files\ftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ftp\functions.h">
+      <Filter>Header Files\ftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\history\history.h">
+      <Filter>Header Files\history</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\cfw_modules.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
