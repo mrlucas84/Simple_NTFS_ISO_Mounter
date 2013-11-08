@@ -97,7 +97,8 @@ MAKE_SELF		= 	make_self_wc.exe
 MY_BIN_TOOLS	=	$(CURDIR)/../../bin
 
 ntfs_ext_iso: $(BUILD)
-	@$(MY_BIN_TOOLS)/$(MAKE_SELF) $(OUTPUT).elf ntfs_ext_iso.self
+	@rm -fr $(OUTPUT).elf
+	@$(MY_BIN_TOOLS)/$(MAKE_SELF) $(CURDIR)/$(BUILD)/ntfs_ext_iso.elf ntfs_ext_iso.self
 	@cp -fr ntfs_ext_iso.self ../../release/BASE/USRDIR/ntfs_ext_iso.self
 	@cp -fr ntfs_ext_iso.self ../../release/UPD/USRDIR/ntfs_ext_iso.self
 

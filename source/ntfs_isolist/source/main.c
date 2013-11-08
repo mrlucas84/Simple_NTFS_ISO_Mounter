@@ -17,12 +17,25 @@ library created on that SDK, maybe someday, someone will port it for Sony SDK to
 ===================================================================================
 */
 #include <stdio.h>
+#include <stdint.h>
 #include <malloc.h>
 #include <string.h>
 #include <math.h>
 #include <unistd.h>
 #include <lv2/process.h>
 #include "ntfs.h"
+
+#define ZERO(x) \
+	memset(&x, 0, sizeof(x));
+
+#define SAFE_CLOSE(x) \
+	if(x) { close(x); *&x = NULL; }
+
+#define SAFE_FCLOSE(x) \
+	if(x) { fclose(x); *&x = NULL; }
+
+#define SAFE_FREE(x) \
+	if(x) { free(x); *&x = NULL; }
 
 #define SYS_PROCESS_SPAWN_STACK_SIZE_1M        0x70
 #define SISOPATH "/dev_hdd0/game/SISO00123/USRDIR"
@@ -36,7 +49,7 @@ int		NTFS_UnMount(int id);
 void	NTFS_UnMountAll(void);
 int		NTFS_Test_Device(char *name);
 
-void	generate_list(FILE* fp_list, char *path, int depth);
+int	generate_list(FILE* fp_list, char *path, int depth);
 
 // =============================================
 // DECLARATIONS
@@ -70,12 +83,11 @@ int main(int argc, const char* argv[])
 {
 	int i;
 	int r				= -1;
-	//int count			= 0;
 	int nTry			= 0;	
 	char* cur_device	= NULL;
-	char path[1024]		= { 0 };
-	memset(&path, 0, sizeof(path));
 	FILE* fp_isolist	= NULL;
+	char path[PATH_MAX];
+	ZERO(path);
 
 	fp_isolist = fopen(SISOPATH"/iso_list.txt", "w"); // always overwrite with clean list...
 
@@ -85,8 +97,6 @@ int main(int argc, const char* argv[])
 	// Try to mount devices ...
 	while(nTry < 1000)
 	{
-		//count = 0;
-
 		// __io_ntfs_usb000 ... __io_ntfs_usb007		
 				
 		for(i = 0; i < 8 ; i++) 
@@ -104,14 +114,11 @@ int main(int argc, const char* argv[])
 				mountCount[i] = ntfsMountDevice (disc_ntfs[i], &mounts[i], NTFS_DEFAULT | NTFS_RECOVER);
             
 				if(mountCount[i] > 0) {
-					//count = 1;
-				} // update counter
-			} 
-			else if(rr == -1) 
-			{ 
+					// ...
+				} 
+			} else if(rr == -1) { 
 				// unmount device
 				NTFS_UnMount(i);
-				//count = 1;
 			}
 		}
 
@@ -155,7 +162,7 @@ int main(int argc, const char* argv[])
 	// allowing it to continue booting normally...
 
 	FILE* fp = fopen(SISOPATH"/isolist_finished", "w");
-	if(fp) { fclose(fp); *&fp = NULL; }
+	SAFE_FCLOSE(fp);
 
 	sysProcessExitSpawn2( SISOPATH"/RELOAD.SELF", NULL, NULL, NULL, 0, 1001, SYS_PROCESS_SPAWN_STACK_SIZE_1M );	
 
@@ -166,74 +173,52 @@ int main(int argc, const char* argv[])
 // MODULES
 // =============================================
 
-void generate_list(FILE* fp_list, char *path, int depth)
+int generate_list(FILE* fp_list, char *path, int depth)
 {
     DIR_ITER *pdir;
     struct stat st;
-    char indent[PATH_MAX]	= {0};
-    char new_path[PATH_MAX] = {0};
-    char filename[PATH_MAX] = {0};    
+    char new_path[PATH_MAX];
+	ZERO(new_path);
+    char filename[PATH_MAX];
+	ZERO(filename);
 
     // Open the directory
     pdir = ps3ntfs_diropen(path);
 
     if (pdir) 
 	{
-        // Build a directory indent (for better readability)
-        memset(indent, ' ', depth * 2);
-        indent[depth * 2] = 0;
-
         // List the contents of the directory
         while (ps3ntfs_dirnext(pdir, filename, &st) == 0) 
-		{
-          
-            if ((strcmp(filename, ".") == 0) || (strcmp(filename, "..") == 0))
+		{          
+            if ((strcmp(filename, ".") == 0) || (strcmp(filename, "..") == 0)) {
                 continue;
+			}
 
-			// fuck it, unlimited listing xD...
-            //max_list++;
-            //if(max_list > 50000) break;
-            
             sprintf(new_path, "%s/%s", path, filename);
-            //ps3ntfs_stat(new_path, &st);
             
 			// List the entry
-            if (S_ISDIR(st.st_mode)) {
-                //DPrintf(" D %s%s/\n", indent, filename);
-
-                // List the directories contents
-                
-                //list(new_path, depth + 1); // recursive list
-               
+            if (S_ISDIR(st.st_mode)) 
+			{           
+				// ...
             } else if (S_ISREG(st.st_mode)) {
 				
 				int nLen = strlen(filename);
 
-				if(strcmp(filename+(nLen-4), ".iso") == 0 || strcmp(filename+(nLen-4), ".ISO") == 0) 
+				if(strstr(path, "PS3ISO") || strstr(path, "DVDISO") || strstr(path, "BDISO")) 
 				{
-					fprintf(fp_list, "<iso>%s;%lu;%s;%s;</iso>\n",
-						filename, 
-						(unsigned long int)st.st_size,
-						filename+(nLen-4),
-						path
-					);
+					if(strcmp(filename+(nLen-4), ".iso") == 0 || strcmp(filename+(nLen-4), ".ISO") == 0) {
+						fprintf(fp_list, "<iso>%s;%lu;%s;%s;</iso>\n", filename, (uint64_t)st.st_size, filename+(nLen-4), path );
+					}
 				}
 
 				if(strstr(path, "PSXISO"))
 				{
-					if(strcmp(filename+(nLen-4), ".bin") == 0 || strcmp(filename+(nLen-4), ".BIN") == 0)
-					{
-						fprintf(fp_list, "<iso>%s;%lu;%s;%s;</iso>\n",
-							filename, 
-							(unsigned long int)st.st_size,
-							filename+(nLen-4),
-							path
-						);
+					if(strcmp(filename+(nLen-4), ".bin") == 0 || strcmp(filename+(nLen-4), ".BIN") == 0) {
+						fprintf(fp_list, "<iso>%s;%lu;%s;%s;</iso>\n", filename, (uint64_t)st.st_size, filename+(nLen-4), path);
 					}
 				}
-                //DPrintf(" F %s%s (%lu)\n", indent, filename, (unsigned long int)st.st_size);
             } else {
-                //DPrintf(" ? %s%s\n", indent, filename);
+                //...
             }
 
         }
@@ -242,10 +227,11 @@ void generate_list(FILE* fp_list, char *path, int depth)
         ps3ntfs_dirclose(pdir);
 
     } else {
-        //DPrintf("opendir(%s) failure.\n", path);
+        // error: failed to open directory...
+		return 0;
     }
 
-    return;
+    return 1;
 }
 
 int NTFS_Event_Mount(int id) 
